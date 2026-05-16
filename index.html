@@ -47,8 +47,8 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 
 /* ── HOST PANEL ── */
 #hostView{padding:14px}
-.host-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.host-header h2{font-family:'Cinzel',serif;font-size:18px;color:var(--gold3);letter-spacing:2px;flex:1;min-width:120px}
+.host-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;padding-bottom:4px}
+.host-header h2{font-family:'Cinzel',serif;font-size:16px;color:var(--gold3);letter-spacing:1px;flex:0 0 auto}
 .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
 .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
 .stat-n{font-size:26px;font-family:'Cinzel',serif;font-weight:700}
@@ -126,7 +126,7 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 .group-banish{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 55px);padding:40px 24px;text-align:center}
 .gb-eyebrow{font-size:11px;letter-spacing:4px;color:#8a4040;text-transform:uppercase;margin-bottom:24px;font-family:'Cinzel',serif;animation:pulseGlow 2s infinite}
 .gb-stamp-wrap{display:flex;flex-direction:column;align-items:center;position:relative;margin-bottom:24px}
-.gb-portrait-img,.gb-av{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);border-radius:50%;object-fit:cover;border:clamp(4px,0.5vw,8px) solid #6a2a2a;filter:grayscale(0.5);display:block}
+.gb-portrait-img{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);border-radius:50%;object-fit:cover;border:clamp(4px,0.5vw,8px) solid #6a2a2a;filter:grayscale(0.5);display:block;flex-shrink:0}.gb-av{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);border-radius:50%;background:rgba(80,20,20,0.4);display:flex;align-items:center;justify-content:center;font-size:clamp(60px,10vw,130px);font-weight:700;color:#906060;font-family:'Cinzel',serif;border:clamp(4px,0.5vw,8px) solid #6a2a2a;flex-shrink:0}
 .gb-av{background:#1a0a0a;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:700;color:#906060;font-family:'Cinzel',serif}
 .gb-stamp{display:none;font-family:'Cinzel',serif;font-size:clamp(24px,4.5vw,60px);font-weight:700;color:rgba(220,40,40,0.95);letter-spacing:4px;text-transform:uppercase;border:clamp(4px,0.5vw,7px) solid rgba(220,40,40,0.9);padding:clamp(10px,1.5vh,20px) clamp(20px,3vw,50px);border-radius:4px;margin-top:16px;transform:rotate(-5deg)}
 .gb-stamp.show{display:inline-block}
@@ -137,12 +137,13 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 
 
 /* ── VICTIM REVEAL ── */
-#victimReveal{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:200;flex-direction:column;align-items:center;justify-content:center;background:#07070f;text-align:center;padding:40px 24px}
+#victimReveal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;flex-direction:column;align-items:center;justify-content:center;background:#07070f;text-align:center;padding:40px 24px;overflow:hidden}
 .vr-eyebrow{font-family:'Cinzel',serif;font-size:11px;letter-spacing:5px;color:var(--red4);text-transform:uppercase;margin-bottom:28px;animation:pulseGlow 1.5s infinite}
-.vr-portrait{position:relative;width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);margin:0 auto clamp(20px,3vh,40px)}
+.vr-portrait{position:relative;width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);margin:0 auto clamp(20px,3vh,40px);flex-shrink:0}
 .vr-portrait img,.vr-av{width:100%;height:100%;border-radius:50%;object-fit:cover;border:6px solid var(--red2);filter:grayscale(0.3)}
 .vr-av{background:#1a0808;display:flex;align-items:center;justify-content:center;font-size:60px;font-weight:700;color:#c06060;font-family:'Cinzel',serif}
 .vr-ring{display:none}
+.vr-portrait-img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:clamp(4px,0.5vw,8px) solid var(--red2);filter:grayscale(0.3);display:block}
 .vr-name{font-family:'Cinzel',serif;font-size:clamp(40px,7vw,90px);letter-spacing:3px;color:#e08080;margin-bottom:clamp(10px,2vh,20px)}
 .vr-was{font-size:clamp(14px,2vw,26px);letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:clamp(12px,2vh,24px);font-family:'Cinzel',serif}
 .vr-stamp{display:inline-block;font-family:'Cinzel',serif;font-size:clamp(24px,4.5vw,60px);font-weight:700;color:rgba(220,40,40,0.95);letter-spacing:4px;text-transform:uppercase;border:clamp(4px,0.5vw,7px) solid rgba(220,40,40,0.88);padding:clamp(10px,1.5vh,20px) clamp(20px,3vw,50px);border-radius:4px;animation:stampAppear 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.3s both}
@@ -226,7 +227,7 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
   <div class="host-header">
     <h2>Host Panel</h2>
     <button class="btn btn-gold btn-lg" onclick="openAddModal()">+ Add Player</button>
-    <label class="btn btn-sm" style="cursor:pointer;border-color:#557799;color:#88bbdd;display:inline-flex;align-items:center;gap:6px" id="hpImgBtn">
+    <label class="btn btn-sm" style="cursor:pointer;border-color:#557799;color:#88bbdd;display:inline-flex;align-items:center;gap:6px;flex-shrink:0" id="hpImgBtn">
       <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="display:none"/>
       🖼 Load Image
     </label>
@@ -893,7 +894,7 @@ function showGroupVictimReveal(victim){
   vr.style.display='flex';
   document.getElementById('vrName').textContent=victim.name;
   const portrait=document.getElementById('vrPortrait');
-  if(victim.photo)portrait.innerHTML=`<img src="${victim.photo}" class="vr-av" style="border:4px solid var(--red2);filter:grayscale(0.3)">`;
+  if(victim.photo)portrait.innerHTML=`<img src="${victim.photo}" class="vr-portrait-img">`;
   else portrait.innerHTML=`<div class="vr-av">${initials(victim.name)}</div>`;
   if(isHostMode){
     syncBar('syncing');
