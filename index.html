@@ -125,27 +125,27 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 /* ── BANISH SCREEN ── */
 .group-banish{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 55px);padding:40px 24px;text-align:center}
 .gb-eyebrow{font-size:11px;letter-spacing:4px;color:#8a4040;text-transform:uppercase;margin-bottom:24px;font-family:'Cinzel',serif;animation:pulseGlow 2s infinite}
-.gb-stamp-wrap{display:inline-block;position:relative;margin-bottom:24px}
-.gb-portrait-img,.gb-av{width:clamp(160px,28vw,300px);height:clamp(160px,28vw,300px);border-radius:50%;object-fit:cover;border:6px solid #6a2a2a;filter:grayscale(0.5);display:block}
+.gb-stamp-wrap{display:flex;flex-direction:column;align-items:center;position:relative;margin-bottom:24px}
+.gb-portrait-img,.gb-av{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);border-radius:50%;object-fit:cover;border:clamp(4px,0.5vw,8px) solid #6a2a2a;filter:grayscale(0.5);display:block}
 .gb-av{background:#1a0a0a;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:700;color:#906060;font-family:'Cinzel',serif}
-.gb-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:rgba(220,40,40,0.95);letter-spacing:3px;text-transform:uppercase;border:4px solid rgba(220,40,40,0.9);padding:4px 10px;border-radius:3px;white-space:nowrap;opacity:0;transition:opacity 0.4s 0.5s}
-.gb-stamp.show{opacity:1}
-.gb-name{font-family:'Cinzel',serif;font-size:clamp(32px,6vw,60px);letter-spacing:3px;color:#c09090;margin-bottom:12px}
-.gb-decree{font-size:clamp(14px,2vw,22px);color:var(--text3);letter-spacing:2px;margin-bottom:28px;font-style:italic}
+.gb-stamp{display:none;font-family:'Cinzel',serif;font-size:clamp(24px,4.5vw,60px);font-weight:700;color:rgba(220,40,40,0.95);letter-spacing:4px;text-transform:uppercase;border:clamp(4px,0.5vw,7px) solid rgba(220,40,40,0.9);padding:clamp(10px,1.5vh,20px) clamp(20px,3vw,50px);border-radius:4px;margin-top:16px;transform:rotate(-5deg)}
+.gb-stamp.show{display:inline-block}
+.gb-name{font-family:'Cinzel',serif;font-size:clamp(40px,7vw,90px);letter-spacing:3px;color:#c09090;margin-bottom:clamp(8px,1.5vh,20px)}
+.gb-decree{font-size:clamp(16px,2.2vw,28px);color:var(--text3);letter-spacing:2px;margin-bottom:clamp(16px,3vh,36px);font-style:italic}
 
 /* ── MURDER ANIMATION ── */
 
 
 /* ── VICTIM REVEAL ── */
-#victimReveal{display:none;position:fixed;inset:0;z-index:60;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);text-align:center;padding:24px}
+#victimReveal{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:200;flex-direction:column;align-items:center;justify-content:center;background:#07070f;text-align:center;padding:40px 24px}
 .vr-eyebrow{font-family:'Cinzel',serif;font-size:11px;letter-spacing:5px;color:var(--red4);text-transform:uppercase;margin-bottom:28px;animation:pulseGlow 1.5s infinite}
-.vr-portrait{position:relative;width:clamp(180px,30vw,340px);height:clamp(180px,30vw,340px);margin:0 auto 24px}
+.vr-portrait{position:relative;width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);margin:0 auto clamp(20px,3vh,40px)}
 .vr-portrait img,.vr-av{width:100%;height:100%;border-radius:50%;object-fit:cover;border:6px solid var(--red2);filter:grayscale(0.3)}
 .vr-av{background:#1a0808;display:flex;align-items:center;justify-content:center;font-size:60px;font-weight:700;color:#c06060;font-family:'Cinzel',serif}
-.vr-ring{position:absolute;inset:-14px;border-radius:50%;border:2px solid var(--red3);animation:ringPulse 1.5s infinite}
-.vr-name{font-family:'Cinzel',serif;font-size:clamp(32px,6vw,64px);letter-spacing:3px;color:#e08080;margin-bottom:12px}
-.vr-was{font-size:13px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:16px;font-family:'Cinzel',serif}
-.vr-stamp{display:inline-block;font-family:'Cinzel',serif;font-size:clamp(22px,4vw,44px);font-weight:700;color:rgba(220,40,40,0.95);letter-spacing:3px;text-transform:uppercase;border:5px solid rgba(220,40,40,0.88);padding:10px 28px;border-radius:4px;margin-bottom:24px;animation:stampAppear 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.3s both}
+.vr-ring{display:none}
+.vr-name{font-family:'Cinzel',serif;font-size:clamp(40px,7vw,90px);letter-spacing:3px;color:#e08080;margin-bottom:clamp(10px,2vh,20px)}
+.vr-was{font-size:clamp(14px,2vw,26px);letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:clamp(12px,2vh,24px);font-family:'Cinzel',serif}
+.vr-stamp{display:inline-block;font-family:'Cinzel',serif;font-size:clamp(24px,4.5vw,60px);font-weight:700;color:rgba(220,40,40,0.95);letter-spacing:4px;text-transform:uppercase;border:clamp(4px,0.5vw,7px) solid rgba(220,40,40,0.88);padding:clamp(10px,1.5vh,20px) clamp(20px,3vw,50px);border-radius:4px;animation:stampAppear 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.3s both}
 
 /* ── MODALS ── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:500;align-items:flex-end;justify-content:center}
@@ -439,31 +439,8 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
     <div class="group-grid" id="gGrid"></div>
   </div>
 
-  <!-- Red flash overlay for murder reveal — sits over the whole lobby -->
+  <!-- Red flash overlay -->
   <div id="gma-flash" style="position:fixed;inset:0;background:#ff0000;opacity:0;pointer-events:none;z-index:50;transition:opacity 0.1s"></div>
-
-  <!-- Victim reveal overlay — shown on top of lobby grid -->
-  <div id="victimReveal">
-    <div class="vr-eyebrow">Last Night's Murder</div>
-    <div class="vr-portrait">
-      <div class="vr-ring"></div>
-      <div id="vrPortrait"></div>
-    </div>
-    <div class="vr-name" id="vrName">—</div>
-    <div class="vr-was">was murdered by the traitors</div>
-    <div class="vr-stamp" style="transform:rotate(-5deg)">MURDERED</div>
-  </div>
-
-  <!-- Banish overlay -->
-  <div id="gBanish" style="display:none;position:fixed;inset:0;z-index:60;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);text-align:center;padding:24px">
-    <div class="gb-eyebrow">The Traitors — Banishment</div>
-    <div class="gb-stamp-wrap">
-      <div id="gbPortrait"></div>
-      <div class="gb-stamp" id="gbStamp">BANISHED</div>
-    </div>
-    <div class="gb-name" id="gbName">—</div>
-    <div class="gb-decree" id="gbDecree">The players have spoken.</div>
-  </div>
 </div>
 
 <!-- ADD PLAYER MODAL -->
@@ -823,7 +800,7 @@ window.renderGLobby=function(){
 }
 function _showBanishOverlay(p){
   const imgHtml=p.photo?`<img src="${p.photo}" class="gb-portrait-img">`:`<div class="gb-av">${initials(p.name)}</div>`;
-  document.getElementById('gbPortrait').innerHTML=`<div style="position:relative;display:inline-block">${imgHtml}<div class="gb-stamp show">BANISHED</div></div>`;
+  document.getElementById('gbPortrait').innerHTML=imgHtml;document.getElementById('gbStamp').className='gb-stamp show';
   document.getElementById('gbName').textContent=p.name;
   const phrases=['The players have spoken.','You are hereby banished.','Leave the roundtable.','Your time here is over.','The vote is final.'];
   document.getElementById('gbDecree').textContent=phrases[Math.floor(Math.random()*phrases.length)];
@@ -1128,5 +1105,28 @@ _initAudio();
     <img id="hp-img"/>
   </div>
 </div>
+<!-- VICTIM REVEAL — direct body child so position:fixed works properly -->
+<div id="victimReveal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;flex-direction:column;align-items:center;justify-content:center;background:#07070f;text-align:center;padding:24px">
+  <div class="vr-eyebrow">Last Night's Murder</div>
+  <div class="vr-portrait">
+    <div class="vr-ring"></div>
+    <div id="vrPortrait"></div>
+  </div>
+  <div class="vr-name" id="vrName">—</div>
+  <div class="vr-was">was murdered by the traitors</div>
+  <div class="vr-stamp" style="transform:rotate(-5deg)">MURDERED</div>
+</div>
+
+<!-- BANISH OVERLAY — direct body child -->
+<div id="gBanish" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;flex-direction:column;align-items:center;justify-content:center;background:#07070f;text-align:center;padding:24px">
+  <div class="gb-eyebrow">The Traitors — Banishment</div>
+  <div class="gb-stamp-wrap">
+    <div id="gbPortrait"></div>
+    <div class="gb-stamp show" id="gbStamp">BANISHED</div>
+  </div>
+  <div class="gb-name" id="gbName">—</div>
+  <div class="gb-decree" id="gbDecree">The players have spoken.</div>
+</div>
+
 </body>
 </html>
