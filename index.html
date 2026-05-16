@@ -551,6 +551,9 @@ onValue(playersRef,(snap)=>{
   document.getElementById('connectingScreen').innerHTML='<h2 style="color:var(--red4);font-family:Cinzel,serif">Connection failed</h2><p style="color:var(--text3);font-family:Cinzel,serif;margin-top:12px">Check internet connection</p>';
 });
 
+// Block any stale state from previous session by setting timestamp to now BEFORE listening
+_lastHandledStateTs=Date.now();
+
 onValue(stateRef,(snap)=>{
   window.gameState=snap.val()||{};
   const ts=window.gameState.ts||0;
@@ -558,6 +561,9 @@ onValue(stateRef,(snap)=>{
   _lastHandledStateTs=ts;
   handleStateChange(window.gameState);
 });
+
+// Push fresh lobby state so all devices reset cleanly
+setTimeout(()=>pushState('lobby'),800);
 
 onValue(holdingRef,(snap)=>{
   const data=snap.val()||{};
