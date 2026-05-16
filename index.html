@@ -230,8 +230,7 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
   <div class="host-header">
     <h2>Host Panel</h2>
     <button class="btn btn-gold btn-lg" onclick="openAddModal()">+ Add Player</button>
-    <button class="btn btn-sm" onclick="hostShowHolding()" style="border-color:#8855cc;color:#cc88ff">🏰 Holding</button>
-    <button class="btn btn-green btn-sm" onclick="hostStartGame()">▶ Start Game</button>
+    <button class="btn btn-sm" id="holdingBtn" onclick="hostShowHolding()" style="border-color:#8855cc;color:#cc88ff">🏰 Holding</button>
     <button class="btn btn-red btn-sm" id="deletePlayersBtn" onclick="deleteSelected()" style="display:none">🗑 Delete (<span id="deleteCount">0</span>)</button>
   </div>
   <div class="stats-row" id="statsRow"></div>
@@ -664,6 +663,9 @@ function handleStateChange(state){
   // Display mode follows game state
   if(state.screen==='holding'){
     showHoldingPage();
+    // Hide upload controls on display device
+    const row=document.getElementById('hpUploadRow');
+    if(row) row.style.display='none';
   } else if(state.screen==='lobby'){
     _murderSequenceRunning=false;
     document.getElementById('holdingPage').classList.remove('active');
@@ -824,8 +826,9 @@ window.doBanish=function(id){
 }
 window.unbanish=function(id){
   syncBar('syncing');
-  // Only clear banished — never touch murdered
-  update(ref(db,'players/'+id),{banished:false,shielded:false});
+  const p=getPlayer(id);if(!p)return;
+  if(p.murdered) update(ref(db,'players/'+id),{murdered:false});
+  else update(ref(db,'players/'+id),{banished:false});
 }
 window.markMurdered=function(id){
   syncBar('syncing');
@@ -1181,6 +1184,78 @@ const SEED_PLAYERS=[
   {name:'Duke Alaric',photo:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+CiAgPHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMyYTEwMDAiLz4KICA8dGV4dCB4PSIxMDAiIHk9IjEyNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iODAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZjA5ODdlIj5EQTwvdGV4dD4KPC9zdmc+'}
 ];
 
+// ═══════════════════════════════════════════
+//  HOLDING PAGE
+// ═══════════════════════════════════════════
+let _holdingActive=false;
+let _hpBgPhoto=null;
+let _hpHostPhoto=null;
+
+function showHoldingPage(){
+  document.getElementById('holdingPage').classList.add('active');
+  if(_hpBgPhoto){
+    document.getElementById('hpBgImg').src=_hpBgPhoto;
+    document.getElementById('hpBgImg').style.display='block';
+    document.getElementById('hpBgPlaceholder').style.display='none';
+  }
+  if(_hpHostPhoto){
+    document.getElementById('hpHostImg').src=_hpHostPhoto;
+    document.getElementById('hpHostImg').style.display='block';
+  }
+}
+
+window.hostShowHolding=function(){
+  _holdingActive=!_holdingActive;
+  const btn=document.getElementById('holdingBtn');
+  if(_holdingActive){
+    if(btn) btn.textContent='👁 Show Players';
+    switchTab('group');
+    showHoldingPage();
+    pushState('holding');
+  } else {
+    if(btn) btn.textContent='🏰 Holding';
+    document.getElementById('holdingPage').classList.remove('active');
+    pushState('lobby');
+    renderGLobby();
+    switchTab('group');
+  }
+}
+
+window.hpUploadBg=function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    _hpBgPhoto=ev.target.result;
+    document.getElementById('hpBgImg').src=_hpBgPhoto;
+    document.getElementById('hpBgImg').style.display='block';
+    document.getElementById('hpBgPlaceholder').style.display='none';
+  };
+  r.readAsDataURL(f);
+}
+
+window.hpUploadHost=function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    _hpHostPhoto=ev.target.result;
+    document.getElementById('hpHostImg').src=_hpHostPhoto;
+    document.getElementById('hpHostImg').style.display='block';
+  };
+  r.readAsDataURL(f);
+}
+
+window.hpEditText=function(){
+  const label=document.getElementById('hpPalaceLabel');
+  const speech=document.getElementById('hpSpeechText');
+  const name=document.getElementById('hpHostName');
+  const n1=prompt('Venue name:',label.textContent);
+  if(n1!==null) label.textContent=n1;
+  const n2=prompt('Speech text:',speech.textContent);
+  if(n2!==null) speech.textContent=n2;
+  const n3=prompt('Host name:',name.textContent);
+  if(n3!==null) name.textContent=n3;
+}
+
 function seedPlayers(){
   // Disabled — add real players via the host panel
 }
@@ -1191,32 +1266,44 @@ seedPlayers();
 
 <!-- ══ HOLDING PAGE ══ -->
 <div id="holdingPage">
-  <div id="hpPalaceWrap">
-    <div class="hp-palace-placeholder" id="hpPalacePlaceholder">
-      <span>📷 Upload palace photo</span>
+  <!-- Full-screen background photo -->
+  <div id="hpBgWrap" style="position:absolute;inset:0;z-index:0">
+    <div id="hpBgPlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--text3);font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;border:2px dashed var(--border2);cursor:pointer;position:relative;overflow:hidden">
+      <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2"/>
+      <span style="font-size:40px;opacity:0.3">🏰</span>
+      <span>Tap to upload palace / venue photo</span>
+      <span style="font-size:11px;opacity:0.5">This will fill the whole screen</span>
     </div>
-    <img id="hpPalaceImg" class="hp-palace" style="display:none" />
+    <img id="hpBgImg" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+    <!-- Dark overlay for text readability -->
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,7,15,0.3) 0%,rgba(7,7,15,0.15) 40%,rgba(7,7,15,0.7) 100%);pointer-events:none"></div>
   </div>
-  <div class="hp-palace-label" id="hpPalaceLabel">Prices Palace</div>
-  <div class="hp-palace-sub">Welcome to tonight's game</div>
-  <div class="hp-host-row">
-    <div>
-      <div class="hp-host-placeholder" id="hpHostPlaceholder">
-        <input type="file" accept="image/*" onchange="hpUploadHost(event)" />
-        <span style="font-size:28px;opacity:0.3">📷</span>
-        <span>Upload host photo</span>
-        <img id="hpHostImg" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;border-radius:4px" />
-      </div>
-    </div>
-    <div class="hp-speech">
+
+  <!-- Content overlaid on photo -->
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;padding:0 32px 40px;pointer-events:none">
+    <div class="hp-palace-label" id="hpPalaceLabel" style="pointer-events:auto">Prices Palace</div>
+    <div class="hp-palace-sub" style="pointer-events:auto">Welcome to tonight's game</div>
+  </div>
+
+  <!-- Host character — bottom right corner -->
+  <div style="position:absolute;bottom:0;right:40px;z-index:2;display:flex;flex-direction:column;align-items:flex-end">
+    <div class="hp-speech" style="margin-bottom:12px;max-width:280px">
       <p id="hpSpeechText">Your host for this evening is the birthday girl herself...</p>
       <div class="hp-name" id="hpHostName">"Barbara Winkleman"</div>
     </div>
+    <div id="hpHostPlaceholder" style="width:160px;height:200px;border:3px dashed var(--border2);border-radius:6px 6px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text3);font-size:11px;font-family:'Cinzel',serif;cursor:pointer;position:relative;overflow:hidden;background:rgba(14,14,28,0.8)">
+      <input type="file" accept="image/*" onchange="hpUploadHost(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2"/>
+      <span style="font-size:24px;opacity:0.4">📷</span>
+      <span>Upload host</span>
+      <img id="hpHostImg" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top"/>
+    </div>
   </div>
-  <div class="hp-upload-row" id="hpUploadRow">
-    <div class="hp-upload-btn btn btn-sm">
-      <input type="file" accept="image/*" onchange="hpUploadPalace(event)" />
-      🏰 Upload Palace Photo
+
+  <!-- Host controls — only visible to host, top left -->
+  <div id="hpUploadRow" style="position:absolute;top:16px;left:16px;z-index:3;display:flex;gap:8px;flex-wrap:wrap">
+    <div class="btn btn-sm" style="position:relative;overflow:hidden;cursor:pointer">
+      <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2"/>
+      🏰 Change Photo
     </div>
     <button class="btn btn-sm" onclick="hpEditText()">✏ Edit Text</button>
   </div>
