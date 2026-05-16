@@ -1199,14 +1199,11 @@ window.hostShowHolding=function(){
   const btn=document.getElementById('holdingBtn');
   if(_holdingActive){
     if(btn){btn.textContent='👁 Hide Holding';btn.style.borderColor='#55aa55';btn.style.color='#88ff88';}
-    // Show holding page as overlay on group view — don't change which view is active
-    // Just make groupView visible underneath and show the overlay
-    showHoldingPage();
-    // Tell display devices to show holding too
+    // Push to TV — host stays on host panel, never shows holding page locally
     pushState('holding');
   } else {
     if(btn){btn.textContent='🏰 Holding';btn.style.borderColor='#8855cc';btn.style.color='#cc88ff';}
-    document.getElementById('holdingPage').classList.remove('active');
+    // Remove on TV
     pushState('lobby');
     renderGLobby();
   }
@@ -1217,9 +1214,13 @@ window.hpUploadBg=function(e){
   const r=new FileReader();
   r.onload=ev=>{
     _hpBgPhoto=ev.target.result;
-    document.getElementById('hp-img').src=_hpBgPhoto;
-    document.getElementById('hp-img').style.display='block';
-    document.getElementById('hp-upload-zone').style.display='none';
+    // Update the holding page image (in case it's visible on this device)
+    const img=document.getElementById('hp-img');
+    if(img){img.src=_hpBgPhoto;img.style.display='block';}
+    const zone=document.getElementById('hp-upload-zone');
+    if(zone) zone.style.display='none';
+    // If holding is active on TV, re-push state so display refreshes
+    if(_holdingActive) pushState('holding');
   };
   r.readAsDataURL(f);
 }
