@@ -554,6 +554,10 @@ onValue(playersRef,(snap)=>{
 // Block any stale state from previous session by setting timestamp to now BEFORE listening
 _lastHandledStateTs=Date.now();
 
+// Force hide any overlays immediately on load
+document.getElementById('gBanish').style.display='none';
+document.getElementById('victimReveal').style.display='none';
+
 onValue(stateRef,(snap)=>{
   window.gameState=snap.val()||{};
   const ts=window.gameState.ts||0;
@@ -611,12 +615,17 @@ window.toggleMode=function(){
   btn.className='nav-mode '+(isHostMode?'host-mode':'display-mode');
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById(isHostMode?'hostView':'groupView').classList.add('active');
-  if(isHostMode)renderHost();
-  else{renderGLobby();handleStateChange(window.gameState);}
+  // Always hide overlays when switching views
+  document.getElementById('gBanish').style.display='none';
+  document.getElementById('victimReveal').style.display='none';
+  if(isHostMode) renderHost();
+  else renderGLobby(); // don't call handleStateChange — never replay stale state on manual switch
 }
 window.switchTab=function(tab){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById(tab+'View').classList.add('active');
+  document.getElementById('gBanish').style.display='none';
+  document.getElementById('victimReveal').style.display='none';
   const btn=document.getElementById('modeBtn');
   if(tab==='host'){isHostMode=true;btn.textContent='HOST PANEL';btn.className='nav-mode host-mode';renderHost();}
   else{isHostMode=false;btn.textContent='GROUP SCREEN';btn.className='nav-mode display-mode';renderGLobby();}
