@@ -127,7 +127,6 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 .gb-eyebrow{font-size:11px;letter-spacing:4px;color:#8a4040;text-transform:uppercase;margin-bottom:24px;font-family:'Cinzel',serif;animation:pulseGlow 2s infinite}
 .gb-stamp-wrap{display:flex;flex-direction:column;align-items:center;position:relative;margin-bottom:24px}
 .gb-portrait-img{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);border-radius:50%;object-fit:cover;border:clamp(4px,0.5vw,8px) solid #6a2a2a;filter:grayscale(0.5);display:block;flex-shrink:0}.gb-av{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);border-radius:50%;background:rgba(80,20,20,0.4);display:flex;align-items:center;justify-content:center;font-size:clamp(60px,10vw,130px);font-weight:700;color:#906060;font-family:'Cinzel',serif;border:clamp(4px,0.5vw,8px) solid #6a2a2a;flex-shrink:0}
-.gb-av{background:#1a0a0a;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:700;color:#906060;font-family:'Cinzel',serif}
 .gb-stamp{display:none;font-family:'Cinzel',serif;font-size:clamp(24px,4.5vw,60px);font-weight:700;color:rgba(220,40,40,0.95);letter-spacing:4px;text-transform:uppercase;border:clamp(4px,0.5vw,7px) solid rgba(220,40,40,0.9);padding:clamp(10px,1.5vh,20px) clamp(20px,3vw,50px);border-radius:4px;margin-top:16px;transform:rotate(-5deg)}
 .gb-stamp.show{display:inline-block}
 .gb-name{font-family:'Cinzel',serif;font-size:clamp(40px,7vw,90px);letter-spacing:3px;color:#c09090;margin-bottom:clamp(8px,1.5vh,20px)}
@@ -139,11 +138,11 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 /* ── VICTIM REVEAL ── */
 #victimReveal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;flex-direction:column;align-items:center;justify-content:center;background:#07070f;text-align:center;padding:40px 24px;overflow:hidden}
 .vr-eyebrow{font-family:'Cinzel',serif;font-size:11px;letter-spacing:5px;color:var(--red4);text-transform:uppercase;margin-bottom:28px;animation:pulseGlow 1.5s infinite}
-.vr-portrait{position:relative;width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);margin:0 auto clamp(20px,3vh,40px);flex-shrink:0}
-.vr-portrait img,.vr-av{width:100%;height:100%;border-radius:50%;object-fit:cover;border:6px solid var(--red2);filter:grayscale(0.3)}
-.vr-av{background:#1a0808;display:flex;align-items:center;justify-content:center;font-size:60px;font-weight:700;color:#c06060;font-family:'Cinzel',serif}
+.vr-portrait{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);margin:0 auto clamp(20px,3vh,40px);flex-shrink:0;position:relative}
+.vr-portrait img{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);border-radius:50%;object-fit:cover;border:clamp(4px,0.5vw,8px) solid var(--red2);filter:grayscale(0.3);display:block;flex-shrink:0}
+.vr-av{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);border-radius:50%;background:rgba(80,10,10,0.4);display:flex;align-items:center;justify-content:center;font-size:clamp(60px,10vw,130px);font-weight:700;color:#c06060;font-family:'Cinzel',serif;border:clamp(4px,0.5vw,8px) solid var(--red2);flex-shrink:0}
 .vr-ring{display:none}
-.vr-portrait-img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:clamp(4px,0.5vw,8px) solid var(--red2);filter:grayscale(0.3);display:block}
+.vr-portrait-img{width:clamp(220px,32vw,420px);height:clamp(220px,32vw,420px);border-radius:50%;object-fit:cover;border:clamp(4px,0.5vw,8px) solid var(--red2);filter:grayscale(0.3);display:block;flex-shrink:0}
 .vr-name{font-family:'Cinzel',serif;font-size:clamp(40px,7vw,90px);letter-spacing:3px;color:#e08080;margin-bottom:clamp(10px,2vh,20px)}
 .vr-was{font-size:clamp(14px,2vw,26px);letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:clamp(12px,2vh,24px);font-family:'Cinzel',serif}
 .vr-stamp{display:inline-block;font-family:'Cinzel',serif;font-size:clamp(24px,4.5vw,60px);font-weight:700;color:rgba(220,40,40,0.95);letter-spacing:4px;text-transform:uppercase;border:clamp(4px,0.5vw,7px) solid rgba(220,40,40,0.88);padding:clamp(10px,1.5vh,20px) clamp(20px,3vw,50px);border-radius:4px;animation:stampAppear 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.3s both}
