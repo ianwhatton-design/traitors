@@ -49,7 +49,7 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 #hostView{padding:14px}
 .host-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;padding-bottom:4px}
 .host-header h2{font-family:'Cinzel',serif;font-size:16px;color:var(--gold3);letter-spacing:1px;flex:0 0 auto}
-.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
 .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
 .stat-n{font-size:26px;font-family:'Cinzel',serif;font-weight:700}
 .stat-l{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:2px}
@@ -230,7 +230,6 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
   <div class="stats-row" id="statsRow"></div>
   <!-- Action buttons row — always visible, below stats -->
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
-    <button class="btn btn-gold" onclick="openAddModal()">+ Add Player</button>
     <label class="btn btn-sm" style="cursor:pointer;border-color:#557799;color:#88bbdd;display:inline-flex;align-items:center;gap:6px" id="hpImgBtn">
       <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="display:none"/>
       🖼 Load Image
@@ -624,7 +623,10 @@ window.renderHost=function(){
   const out=all.filter(p=>p.banished||p.murdered);
   document.getElementById('statsRow').innerHTML=`
     <div class="stat-card"><div class="stat-n gold">${active.length}</div><div class="stat-l">Active Players</div></div>
-    <div class="stat-card"><div class="stat-n gray">${out.length}</div><div class="stat-l">Banished / Murdered</div></div>`;
+    <div class="stat-card"><div class="stat-n gray">${out.length}</div><div class="stat-l">Banished / Murdered</div></div>
+    <div class="stat-card" onclick="openAddModal()" style="cursor:pointer;border-color:var(--gold);background:rgba(180,149,46,0.06);display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Cinzel',serif;font-size:14px;color:var(--gold3);letter-spacing:1px">
+      <span style="font-size:20px">+</span> Add Player
+    </div>`;
   let list=all;
   if(hostFilter==='active')list=active;
   else if(hostFilter==='banished')list=all.filter(p=>p.banished);
