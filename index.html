@@ -1223,16 +1223,33 @@ window.hpUploadBg=function(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=ev=>{
-    _hpBgPhoto=ev.target.result;
-    // Save to Firebase so laptop gets the image too
-    update(holdingRef,{photo:_hpBgPhoto,ts:Date.now()})
-      .then(()=>console.log('Holding image saved to Firebase'))
-      .catch(err=>console.error('Holding image save failed:',err));
-    // Update locally immediately
-    const img=document.getElementById('hp-img');
-    if(img){img.src=_hpBgPhoto;img.style.display='block';}
-    const zone=document.getElementById('hp-upload-zone');
-    if(zone) zone.style.display='none';
+    // Resize and compress heavily before saving to Firebase
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      // Max 1280px wide for TV display, keep aspect ratio
+      const maxW=1280,maxH=720;
+      let w=img.width,h=img.height;
+      if(w>maxW||h>maxH){
+        const ratio=Math.min(maxW/w,maxH/h);
+        w=Math.round(w*ratio);h=Math.round(h*ratio);
+      }
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      // Compress to JPEG at 60% quality — keeps it well under Firebase limits
+      _hpBgPhoto=canvas.toDataURL('image/jpeg',0.6);
+      console.log('Holding image compressed to',Math.round(_hpBgPhoto.length/1024)+'KB');
+      // Save to Firebase
+      update(holdingRef,{photo:_hpBgPhoto,ts:Date.now()})
+        .then(()=>console.log('Holding image saved OK'))
+        .catch(err=>console.error('Save failed:',err));
+      // Update locally
+      const imgEl=document.getElementById('hp-img');
+      if(imgEl){imgEl.src=_hpBgPhoto;imgEl.style.display='block';}
+      const zone=document.getElementById('hp-upload-zone');
+      if(zone) zone.style.display='none';
+    };
+    img.src=ev.target.result;
   };
   r.readAsDataURL(f);
 }
