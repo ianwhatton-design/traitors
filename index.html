@@ -24,14 +24,14 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 #syncBar.err{background:var(--red2)}
 
 /* ── NAV ── */
-#nav{position:sticky;top:0;z-index:200;background:rgba(7,7,15,0.97);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;height:52px;margin-top:3px}
+#nav{position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(7,7,15,0.97);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;height:52px}
 .nav-logo{font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--gold3);white-space:nowrap;flex:1}
 .nav-mode{font-size:11px;letter-spacing:1.5px;color:var(--text3);font-family:'Cinzel',serif;padding:7px 16px;border:1px solid var(--border);border-radius:20px;cursor:pointer;transition:all 0.15s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
 .nav-mode.host-mode{border-color:var(--gold);color:var(--gold3)}
 .nav-mode.display-mode{border-color:var(--green2);color:var(--green3)}
 
 /* ── VIEWS ── */
-.view{display:none;min-height:calc(100vh - 55px)}
+.view{display:none;min-height:calc(100vh - 52px);padding-top:52px}
 .view.active{display:block}
 
 /* ── BUTTONS ── */
@@ -188,7 +188,7 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── HOLDING PAGE ── */
-#holdingPage{display:none;position:fixed;inset:0;z-index:40;background:#07070f;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+#holdingPage{display:none;position:fixed;top:52px;left:0;right:0;bottom:0;z-index:40;background:#07070f;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
 #holdingPage.active{display:flex}
 #hp-frame{position:relative;width:calc(100% - 48px);height:calc(100% - 48px);border:3px solid var(--gold2);box-shadow:0 0 0 1px #8a6a10,inset 0 0 0 1px #8a6a10,0 0 40px rgba(212,172,58,0.15);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0a0a14}
 /* gold corner ornaments */
@@ -215,7 +215,10 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 
 <div id="nav">
   <div class="nav-logo">THE TRAITORS</div>
-  <div class="nav-mode host-mode" id="modeBtn" onclick="toggleMode()">HOST PANEL</div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div class="nav-mode" id="imgToggleBtn" onclick="toggleHoldingImage()" style="display:none">🖼 Off</div>
+    <div class="nav-mode host-mode" id="modeBtn" onclick="toggleMode()">HOST PANEL</div>
+  </div>
 </div>
 
 <!-- ══ HOST VIEW ══ -->
@@ -223,7 +226,6 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
   <div class="host-header">
     <h2>Host Panel</h2>
     <button class="btn btn-gold btn-lg" onclick="openAddModal()">+ Add Player</button>
-      <button class="btn btn-sm" id="holdingBtn" onclick="hostShowHolding()" style="border-color:#8855cc;color:#cc88ff">🏰 Holding</button>
       <div class="btn btn-sm" style="position:relative;overflow:hidden;cursor:pointer;border-color:#557799;color:#88bbdd" id="hpImgBtn">
         <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2"/>
         🖼 Load Image
@@ -658,10 +660,7 @@ function handleStateChange(state){
   if(!state||!state.screen) return;
   if(isHostMode) return; // host controls own view
   // Display mode follows game state
-  if(state.screen==='holding'){
-    showHoldingPage();
-
-  } else if(state.screen==='lobby'){
+else if(state.screen==='lobby'){
     _murderSequenceRunning=false;
     document.getElementById('holdingPage').classList.remove('active');
     gShowLobby();
@@ -1194,18 +1193,16 @@ function showHoldingPage(){
   }
 }
 
-window.hostShowHolding=function(){
+window.toggleHoldingImage=function(){
   _holdingActive=!_holdingActive;
-  const btn=document.getElementById('holdingBtn');
+  const btn=document.getElementById('imgToggleBtn');
+  const hp=document.getElementById('holdingPage');
   if(_holdingActive){
-    if(btn){btn.textContent='👁 Hide Holding';btn.style.borderColor='#55aa55';btn.style.color='#88ff88';}
-    // Push to TV — host stays on host panel, never shows holding page locally
-    pushState('holding');
+    if(btn){btn.textContent='🖼 On';btn.className='nav-mode display-mode';}
+    hp.classList.add('active');
   } else {
-    if(btn){btn.textContent='🏰 Holding';btn.style.borderColor='#8855cc';btn.style.color='#cc88ff';}
-    // Remove on TV
-    pushState('lobby');
-    renderGLobby();
+    if(btn){btn.textContent='🖼 Off';btn.className='nav-mode';}
+    hp.classList.remove('active');
   }
 }
 
@@ -1214,13 +1211,13 @@ window.hpUploadBg=function(e){
   const r=new FileReader();
   r.onload=ev=>{
     _hpBgPhoto=ev.target.result;
-    // Update the holding page image (in case it's visible on this device)
     const img=document.getElementById('hp-img');
     if(img){img.src=_hpBgPhoto;img.style.display='block';}
     const zone=document.getElementById('hp-upload-zone');
     if(zone) zone.style.display='none';
-    // If holding is active on TV, re-push state so display refreshes
-    if(_holdingActive) pushState('holding');
+    // Show the toggle button in nav now image is loaded
+    const toggleBtn=document.getElementById('imgToggleBtn');
+    if(toggleBtn) toggleBtn.style.display='';
   };
   r.readAsDataURL(f);
 }
