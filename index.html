@@ -188,25 +188,18 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── HOLDING PAGE ── */
-#holdingPage{display:none;position:fixed;inset:0;z-index:80;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 24px;overflow:hidden}
+#holdingPage{display:none;position:fixed;inset:0;z-index:80;background:#07070f;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
 #holdingPage.active{display:flex}
-.hp-palace{width:100%;max-width:900px;max-height:45vh;object-fit:cover;border-radius:8px;margin-bottom:24px;border:2px solid rgba(180,149,46,0.3)}
-.hp-palace-placeholder{width:100%;max-width:900px;height:260px;background:linear-gradient(180deg,#0a0a18 0%,#1a1230 50%,#0a0a18 100%);border-radius:8px;margin-bottom:24px;border:2px solid rgba(180,149,46,0.2);display:flex;align-items:center;justify-content:center;color:var(--text3);font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px}
-.hp-host-row{display:flex;align-items:flex-end;justify-content:center;gap:32px;margin-bottom:28px;flex-wrap:wrap}
-.hp-host-img{width:180px;height:220px;object-fit:cover;object-position:top;border-radius:6px;border:3px solid var(--gold2);box-shadow:0 0 24px rgba(212,172,58,0.3)}
-.hp-host-placeholder{width:180px;height:220px;border-radius:6px;border:3px dashed var(--border2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text3);font-size:12px;font-family:'Cinzel',serif;cursor:pointer;position:relative;overflow:hidden;transition:border-color 0.15s}
-.hp-host-placeholder:hover{border-color:var(--gold)}
-.hp-host-placeholder input{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2}
-.hp-speech{background:rgba(14,14,28,0.9);border:1px solid var(--border2);border-radius:8px;padding:16px 20px;max-width:380px;position:relative;font-style:italic}
-.hp-speech:before{content:'';position:absolute;bottom:-10px;left:40px;border:10px solid transparent;border-top-color:var(--border2);border-bottom:0}
-.hp-speech:after{content:'';position:absolute;bottom:-8px;left:41px;border:9px solid transparent;border-top-color:rgba(14,14,28,0.9);border-bottom:0}
-.hp-speech p{font-size:15px;color:var(--text2);line-height:1.6}
-.hp-speech .hp-name{font-family:'Cinzel',serif;font-size:13px;color:var(--gold3);letter-spacing:2px;margin-top:10px;font-style:normal}
-.hp-palace-label{font-family:'Cinzel',serif;font-size:clamp(18px,3vw,28px);letter-spacing:4px;color:var(--gold3);margin-bottom:4px}
-.hp-palace-sub{font-size:12px;color:var(--text3);letter-spacing:2px;margin-bottom:20px}
-.hp-upload-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px}
-.hp-upload-btn{position:relative;overflow:hidden;cursor:pointer}
-.hp-upload-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2}
+#hp-frame{position:relative;width:calc(100% - 48px);height:calc(100% - 48px);border:3px solid var(--gold2);box-shadow:0 0 0 1px #8a6a10,inset 0 0 0 1px #8a6a10,0 0 40px rgba(212,172,58,0.15);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0a0a14}
+/* gold corner ornaments */
+#hp-frame:before,#hp-frame:after{content:'';position:absolute;width:24px;height:24px;border-color:var(--gold3);border-style:solid;opacity:0.8}
+#hp-frame:before{top:8px;left:8px;border-width:2px 0 0 2px}
+#hp-frame:after{bottom:8px;right:8px;border-width:0 2px 2px 0}
+#hp-upload-zone{display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--text3);font-family:'Cinzel',serif;cursor:pointer;position:relative;z-index:2;padding:20px}
+#hp-upload-zone input{position:absolute;inset:-100px;opacity:0;cursor:pointer;z-index:3;width:200%;height:200%}
+#hp-img{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+#hp-change-btn{position:absolute;top:20px;left:20px;z-index:10;opacity:0;transition:opacity 0.2s}
+#holdingPage:hover #hp-change-btn{opacity:1}
 </style>
 </head>
 <body>
@@ -1189,18 +1182,13 @@ const SEED_PLAYERS=[
 // ═══════════════════════════════════════════
 let _holdingActive=false;
 let _hpBgPhoto=null;
-let _hpHostPhoto=null;
 
 function showHoldingPage(){
   document.getElementById('holdingPage').classList.add('active');
   if(_hpBgPhoto){
-    document.getElementById('hpBgImg').src=_hpBgPhoto;
-    document.getElementById('hpBgImg').style.display='block';
-    document.getElementById('hpBgPlaceholder').style.display='none';
-  }
-  if(_hpHostPhoto){
-    document.getElementById('hpHostImg').src=_hpHostPhoto;
-    document.getElementById('hpHostImg').style.display='block';
+    document.getElementById('hp-img').src=_hpBgPhoto;
+    document.getElementById('hp-img').style.display='block';
+    document.getElementById('hp-upload-zone').style.display='none';
   }
 }
 
@@ -1208,16 +1196,20 @@ window.hostShowHolding=function(){
   _holdingActive=!_holdingActive;
   const btn=document.getElementById('holdingBtn');
   if(_holdingActive){
-    if(btn) btn.textContent='👁 Show Players';
-    switchTab('group');
+    if(btn){btn.textContent='👁 Show Players';btn.style.borderColor='#55aa55';btn.style.color='#88ff88';}
+    // Show group view but keep isHostMode true so toggle button still works
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('groupView').classList.add('active');
     showHoldingPage();
     pushState('holding');
   } else {
-    if(btn) btn.textContent='🏰 Holding';
+    if(btn){btn.textContent='🏰 Holding';btn.style.borderColor='#8855cc';btn.style.color='#cc88ff';}
     document.getElementById('holdingPage').classList.remove('active');
+    // Go back to host view
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('hostView').classList.add('active');
     pushState('lobby');
     renderGLobby();
-    switchTab('group');
   }
 }
 
@@ -1226,35 +1218,13 @@ window.hpUploadBg=function(e){
   const r=new FileReader();
   r.onload=ev=>{
     _hpBgPhoto=ev.target.result;
-    document.getElementById('hpBgImg').src=_hpBgPhoto;
-    document.getElementById('hpBgImg').style.display='block';
-    document.getElementById('hpBgPlaceholder').style.display='none';
+    document.getElementById('hp-img').src=_hpBgPhoto;
+    document.getElementById('hp-img').style.display='block';
+    document.getElementById('hp-upload-zone').style.display='none';
   };
   r.readAsDataURL(f);
 }
 
-window.hpUploadHost=function(e){
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{
-    _hpHostPhoto=ev.target.result;
-    document.getElementById('hpHostImg').src=_hpHostPhoto;
-    document.getElementById('hpHostImg').style.display='block';
-  };
-  r.readAsDataURL(f);
-}
-
-window.hpEditText=function(){
-  const label=document.getElementById('hpPalaceLabel');
-  const speech=document.getElementById('hpSpeechText');
-  const name=document.getElementById('hpHostName');
-  const n1=prompt('Venue name:',label.textContent);
-  if(n1!==null) label.textContent=n1;
-  const n2=prompt('Speech text:',speech.textContent);
-  if(n2!==null) speech.textContent=n2;
-  const n3=prompt('Host name:',name.textContent);
-  if(n3!==null) name.textContent=n3;
-}
 
 function seedPlayers(){
   // Disabled — add real players via the host panel
@@ -1266,46 +1236,17 @@ seedPlayers();
 
 <!-- ══ HOLDING PAGE ══ -->
 <div id="holdingPage">
-  <!-- Full-screen background photo -->
-  <div id="hpBgWrap" style="position:absolute;inset:0;z-index:0">
-    <div id="hpBgPlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--text3);font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;border:2px dashed var(--border2);cursor:pointer;position:relative;overflow:hidden">
+  <div id="hp-frame">
+    <div id="hp-upload-zone">
+      <input type="file" accept="image/*" onchange="hpUploadBg(event)"/>
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <span style="font-size:14px;letter-spacing:2px">Tap to load image</span>
+    </div>
+    <img id="hp-img"/>
+    <div class="btn btn-sm" id="hp-change-btn" style="position:relative;overflow:hidden;pointer-events:auto">
       <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2"/>
-      <span style="font-size:40px;opacity:0.3">🏰</span>
-      <span>Tap to upload palace / venue photo</span>
-      <span style="font-size:11px;opacity:0.5">This will fill the whole screen</span>
+      📷 Change Image
     </div>
-    <img id="hpBgImg" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
-    <!-- Dark overlay for text readability -->
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,7,15,0.3) 0%,rgba(7,7,15,0.15) 40%,rgba(7,7,15,0.7) 100%);pointer-events:none"></div>
-  </div>
-
-  <!-- Content overlaid on photo -->
-  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;padding:0 32px 40px;pointer-events:none">
-    <div class="hp-palace-label" id="hpPalaceLabel" style="pointer-events:auto">Prices Palace</div>
-    <div class="hp-palace-sub" style="pointer-events:auto">Welcome to tonight's game</div>
-  </div>
-
-  <!-- Host character — bottom right corner -->
-  <div style="position:absolute;bottom:0;right:40px;z-index:2;display:flex;flex-direction:column;align-items:flex-end">
-    <div class="hp-speech" style="margin-bottom:12px;max-width:280px">
-      <p id="hpSpeechText">Your host for this evening is the birthday girl herself...</p>
-      <div class="hp-name" id="hpHostName">"Barbara Winkleman"</div>
-    </div>
-    <div id="hpHostPlaceholder" style="width:160px;height:200px;border:3px dashed var(--border2);border-radius:6px 6px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text3);font-size:11px;font-family:'Cinzel',serif;cursor:pointer;position:relative;overflow:hidden;background:rgba(14,14,28,0.8)">
-      <input type="file" accept="image/*" onchange="hpUploadHost(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2"/>
-      <span style="font-size:24px;opacity:0.4">📷</span>
-      <span>Upload host</span>
-      <img id="hpHostImg" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top"/>
-    </div>
-  </div>
-
-  <!-- Host controls — only visible to host, top left -->
-  <div id="hpUploadRow" style="position:absolute;top:16px;left:16px;z-index:3;display:flex;gap:8px;flex-wrap:wrap">
-    <div class="btn btn-sm" style="position:relative;overflow:hidden;cursor:pointer">
-      <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2"/>
-      🏰 Change Photo
-    </div>
-    <button class="btn btn-sm" onclick="hpEditText()">✏ Edit Text</button>
   </div>
 </div>
 </body>
