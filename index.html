@@ -226,14 +226,17 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 <div id="hostView" class="view active">
   <div class="host-header">
     <h2>Host Panel</h2>
-    <button class="btn btn-gold btn-lg" onclick="openAddModal()">+ Add Player</button>
-    <label class="btn btn-sm" style="cursor:pointer;border-color:#557799;color:#88bbdd;display:inline-flex;align-items:center;gap:6px;flex-shrink:0" id="hpImgBtn">
+  </div>
+  <div class="stats-row" id="statsRow"></div>
+  <!-- Action buttons row — always visible, below stats -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+    <button class="btn btn-gold" onclick="openAddModal()">+ Add Player</button>
+    <label class="btn btn-sm" style="cursor:pointer;border-color:#557799;color:#88bbdd;display:inline-flex;align-items:center;gap:6px" id="hpImgBtn">
       <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="display:none"/>
       🖼 Load Image
     </label>
     <button class="btn btn-red btn-sm" id="deletePlayersBtn" onclick="deleteSelected()" style="display:none">🗑 Delete (<span id="deleteCount">0</span>)</button>
   </div>
-  <div class="stats-row" id="statsRow"></div>
   <div class="filter-bar">
     <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
     <button class="filter-btn" onclick="setFilter('active',this)">Active</button>
