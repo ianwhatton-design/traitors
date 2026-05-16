@@ -226,10 +226,10 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
   <div class="host-header">
     <h2>Host Panel</h2>
     <button class="btn btn-gold btn-lg" onclick="openAddModal()">+ Add Player</button>
-      <div class="btn btn-sm" style="position:relative;overflow:hidden;cursor:pointer;border-color:#557799;color:#88bbdd" id="hpImgBtn">
-        <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2"/>
-        🖼 Load Image
-      </div>
+    <label class="btn btn-sm" style="cursor:pointer;border-color:#557799;color:#88bbdd;display:inline-flex;align-items:center;gap:6px" id="hpImgBtn">
+      <input type="file" accept="image/*" onchange="hpUploadBg(event)" style="display:none"/>
+      🖼 Load Image
+    </label>
     <button class="btn btn-red btn-sm" id="deletePlayersBtn" onclick="deleteSelected()" style="display:none">🗑 Delete (<span id="deleteCount">0</span>)</button>
   </div>
   <div class="stats-row" id="statsRow"></div>
