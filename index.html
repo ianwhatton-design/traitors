@@ -216,7 +216,7 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 <div id="nav">
   <div class="nav-logo">THE TRAITORS</div>
   <div style="display:flex;gap:8px;align-items:center">
-    <div class="nav-mode" id="imgToggleBtn" onclick="toggleHoldingImage()" style="display:none">🖼 Off</div>
+    <div class="nav-mode" id="imgToggleBtn" onclick="toggleHoldingImage()" style="border-color:#557799;color:#88bbdd">🖼 Off</div>
     <div class="nav-mode host-mode" id="modeBtn" onclick="toggleMode()">HOST PANEL</div>
   </div>
 </div>
@@ -1216,8 +1216,6 @@ window.hpUploadBg=function(e){
     const zone=document.getElementById('hp-upload-zone');
     if(zone) zone.style.display='none';
     // Show the toggle button in nav now image is loaded
-    const toggleBtn=document.getElementById('imgToggleBtn');
-    if(toggleBtn) toggleBtn.style.display='';
   };
   r.readAsDataURL(f);
 }
