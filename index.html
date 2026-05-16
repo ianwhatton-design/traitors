@@ -1181,29 +1181,42 @@ const SEED_PLAYERS=[
 // ═══════════════════════════════════════════
 //  HOLDING PAGE
 // ═══════════════════════════════════════════
+//  HOLDING PAGE
+// ═══════════════════════════════════════════
 let _holdingActive=false;
 let _hpBgPhoto=null;
 
-function showHoldingPage(){
-  document.getElementById('holdingPage').classList.add('active');
-  if(_hpBgPhoto){
-    document.getElementById('hp-img').src=_hpBgPhoto;
-    document.getElementById('hp-img').style.display='block';
-    document.getElementById('hp-upload-zone').style.display='none';
+// Listen for holding image/state from Firebase
+const holdingRef=ref(db,'holdingPage');
+onValue(holdingRef,(snap)=>{
+  const data=snap.val()||{};
+  if(data.photo&&data.photo!==_hpBgPhoto){
+    _hpBgPhoto=data.photo;
+    const img=document.getElementById('hp-img');
+    if(img){img.src=_hpBgPhoto;img.style.display='block';}
+    const zone=document.getElementById('hp-upload-zone');
+    if(zone) zone.style.display='none';
   }
-}
+  // Sync toggle state
+  const shouldBeOn=!!data.active;
+  if(shouldBeOn!==_holdingActive){
+    _holdingActive=shouldBeOn;
+    const btn=document.getElementById('imgToggleBtn');
+    const hp=document.getElementById('holdingPage');
+    if(_holdingActive){
+      if(btn){btn.textContent='🖼 On';btn.className='nav-mode display-mode';}
+      hp.classList.add('active');
+    } else {
+      if(btn){btn.textContent='🖼 Off';btn.style.borderColor='#557799';btn.style.color='#88bbdd';btn.className='nav-mode';}
+      hp.classList.remove('active');
+    }
+  }
+});
 
 window.toggleHoldingImage=function(){
   _holdingActive=!_holdingActive;
-  const btn=document.getElementById('imgToggleBtn');
-  const hp=document.getElementById('holdingPage');
-  if(_holdingActive){
-    if(btn){btn.textContent='🖼 On';btn.className='nav-mode display-mode';}
-    hp.classList.add('active');
-  } else {
-    if(btn){btn.textContent='🖼 Off';btn.className='nav-mode';}
-    hp.classList.remove('active');
-  }
+  // Write to Firebase so all devices sync
+  update(holdingRef,{active:_holdingActive,ts:Date.now()});
 }
 
 window.hpUploadBg=function(e){
@@ -1211,11 +1224,15 @@ window.hpUploadBg=function(e){
   const r=new FileReader();
   r.onload=ev=>{
     _hpBgPhoto=ev.target.result;
+    // Save to Firebase so laptop gets the image too
+    update(holdingRef,{photo:_hpBgPhoto,ts:Date.now()})
+      .then(()=>console.log('Holding image saved to Firebase'))
+      .catch(err=>console.error('Holding image save failed:',err));
+    // Update locally immediately
     const img=document.getElementById('hp-img');
     if(img){img.src=_hpBgPhoto;img.style.display='block';}
     const zone=document.getElementById('hp-upload-zone');
     if(zone) zone.style.display='none';
-    // Show the toggle button in nav now image is loaded
   };
   r.readAsDataURL(f);
 }
