@@ -107,15 +107,15 @@ html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font
 @keyframes victimCardPulse{0%,100%{box-shadow:0 0 16px rgba(220,48,48,0.3)}50%{box-shadow:0 0 36px rgba(220,48,48,0.8)}}
 .gc.out-banished{opacity:0.55}
 .gc.out-banished .gc-img{filter:grayscale(0.85)}
-.gc.out-murdered{opacity:0.45}
-.gc.out-murdered .gc-img{filter:grayscale(1)}
+.gc.out-murdered{opacity:0.7}
+.gc.out-murdered .gc-img{filter:grayscale(1) brightness(0.5)}
 .gc.shielded{border:3px solid var(--gold2);box-shadow:0 0 18px rgba(212,172,58,0.5)}
 .gc-img{width:100%;aspect-ratio:1;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 .gc-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .gc-av{width:44px;height:44px;border-radius:50%;background:rgba(180,149,46,0.1);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--gold3);font-family:'Cinzel',serif;position:relative;z-index:1}
 .gc-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-14deg);font-family:'Cinzel',serif;font-size:clamp(13px,2.8vw,28px);font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:5px 12px;border-radius:4px;white-space:nowrap;pointer-events:none}
-.gc-stamp.murdered{color:#ff1a1a;border:4px solid #ff1a1a;text-shadow:0 0 14px #ff0000,0 0 5px #ff0000;background:rgba(0,0,0,0.4)}
-.gc-stamp.banished{color:#1a7aff;border:4px solid #1a7aff;text-shadow:0 0 14px #0055ff,0 0 5px #0055ff;background:rgba(0,0,0,0.4)}
+.gc-stamp.murdered{color:#ff3030;border:5px solid #ff2020;text-shadow:0 0 20px #ff0000,0 0 8px #ff4040;background:rgba(0,0,0,0.6);font-size:clamp(15px,3vw,32px)}
+.gc-stamp.banished{color:#3399ff;border:5px solid #2288ff;text-shadow:0 0 20px #0066ff,0 0 8px #44aaff;background:rgba(0,0,0,0.6);font-size:clamp(15px,3vw,32px)}
 .gc-shield{position:absolute;top:6px;right:6px;width:clamp(28px,5vw,52px);height:clamp(28px,5vw,52px);pointer-events:none;filter:drop-shadow(0 0 8px #f0cc60) drop-shadow(0 0 3px #fff);z-index:10}
 .gc-name{font-size:clamp(11px,1.5vw,18px);color:var(--text);margin-top:6px;padding:2px 6px 6px;white-space:normal;font-family:'Cinzel',serif;letter-spacing:0.5px;line-height:1.25;text-align:center;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .gc-tag{font-size:9px;padding:2px 5px;border-radius:3px;margin-top:3px;display:inline-block;letter-spacing:0.5px;text-transform:uppercase;font-family:'Cinzel',serif}
@@ -515,6 +515,8 @@ let editingId=null;
 let currentPhoto=null;
 let _lastHandledStateTs=0;
 let _murderSequenceRunning=false;
+let _holdingActive=false;
+let _hpBgPhoto=null;
 
 // ─── HELPERS ──────────────────────────────────
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
@@ -828,7 +830,7 @@ function _showBanishOverlay(p){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('groupView').classList.add('active');
   document.getElementById('gBanish').style.display='flex';
-  setTimeout(()=>{document.getElementById('gBanish').style.display='none';renderGLobby();},10000);
+  setTimeout(()=>{document.getElementById('gBanish').style.display='none';renderGLobby();if(isHostMode)pushState('lobby');},10000);
 }
 window.gOpenBanish=_showBanishOverlay;
 
@@ -868,7 +870,7 @@ function runMurderAnim(){
   });
   shielded.forEach(p=>{const c=document.getElementById('gc-'+p.id);if(c)setTimeout(()=>{c.classList.remove('mr-flash');c.classList.add('mr-shield-dim');},600);});
   playMurderAmbience();
-  gFlashLoop();
+  gFlashLoop(true);
   const totalToHide=Math.max(0,elim.length-2);
   const TARGET=30000,END=5000,avail=TARGET-END;
   const initDelay=totalToHide<=2?Math.min(8000,avail*0.3):3000;
@@ -1035,8 +1037,6 @@ function playScream(){
 }
 
 // ─── HOLDING PAGE ──────────────────────────────
-let _holdingActive=false;
-let _hpBgPhoto=null;
 function _applyHoldingState(){
   const btn=document.getElementById('imgToggleBtn');
   const hp=document.getElementById('holdingPage');
